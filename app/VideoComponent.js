@@ -28,7 +28,7 @@ export default class VideoComponent extends Component {
                     }
                 },
                 (error)=> {
-                    this.log("Unable to access Camera and Microphone");
+                    this.log("Unable to access Camera and Microphon");
                 }
             );
         };
