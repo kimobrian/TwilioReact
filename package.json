@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "./node_modules/.bin/eslint app/ --fix",
-    "build": "webpack",
-    "start": "node server"
+    "build": "./node_modules/.bin/webpack",
+    "start": "node server",
+    "start:prod": "NODE_ENV=PROD && npm run build && node server.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,9 @@
     "react",
     "twilio"
   ],
+  "engines": {
+    "node": "7.0.0"
+  },
   "author": "O'Brian Kim",
   "license": "MIT",
   "bugs": {
