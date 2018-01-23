@@ -43,7 +43,7 @@ var configFunc = function(){
             new ExtractTextPlugin("[name]-[hash].cssi")
         ]};
     if(process.env.NODE_ENV === "PROD") {
-        config.plugins.push(new webpack.optimize.UglifyJsPlugin(), new webpack.optimize.DedupePlugin());
+        config.plugins.push(new webpack.optimize.UglifyJsPlugin());
         config.plugins.push(new webpack.optimize.CommonsChunkPlugin({
             name: "commons",              
             filename: "commons.js"
