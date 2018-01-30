@@ -21,7 +21,8 @@ export default class VideoComponent extends Component {
 		this.joinRoom = this.joinRoom.bind(this);
 		this._handleRoomNameChange = this._handleRoomNameChange.bind(this);
 		this.roomJoined = this.roomJoined.bind(this);
-		this.leaveRoom = this.leaveRoom.bind(this);
+    this.leaveRoom = this.leaveRoom.bind(this);
+    this.detachTracks = this.detachTracks.bind(this);
 	}
 
 	_handleRoomNameChange(e) {
@@ -61,6 +62,19 @@ export default class VideoComponent extends Component {
 	attachParticipantTracks(participant, container) {
 		var tracks = Array.from(participant.tracks.values());
 		this.attachTracks(tracks, container);
+	}
+
+	detachTracks(tracks) {
+		tracks.forEach(track => {
+			track.detach().forEach(detachedElement => {
+				detachedElement.remove();
+			});
+		});
+	}
+
+	detachParticipantTracks(participant) {
+		var tracks = Array.from(participant.tracks.values());
+		this.detachTracks(tracks);
 	}
 
 	roomJoined(room) {
