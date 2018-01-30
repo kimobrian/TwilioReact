@@ -1,0 +1,36 @@
+{
+  "name": "twilio-react",
+  "version": "1.0.0",
+  "description": "Simple Video Chat app Using React",
+  "main": "index.js",
+  "repository": "git@github.com:kimobrian/TwilioReact.git",
+  "author": "O'Brian Kim",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^5.0.0",
+    "express": "^4.16.2",
+    "faker": "^4.1.0",
+    "material-ui": "^0.20.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-tap-event-plugin": "^3.0.2"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/webpack",
+    "start": "node server",
+    "start:prod": "npm run build && node server.js"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.9",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-middleware": "^2.0.4",
+    "webpack-hot-middleware": "^2.21.0"
+  }
+}
