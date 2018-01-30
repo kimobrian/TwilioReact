@@ -20,7 +20,8 @@ export default class VideoComponent extends Component {
 		};
 		this.joinRoom = this.joinRoom.bind(this);
 		this._handleRoomNameChange = this._handleRoomNameChange.bind(this);
-		this.roomJoined = this.roomJoined.bind(this);
+    this.roomJoined = this.roomJoined.bind(this);
+    this.leaveRoom = this.leaveRoom.bind(this);
 	}
 
 	_handleRoomNameChange(e) {
@@ -81,7 +82,12 @@ export default class VideoComponent extends Component {
 			const { identity, token } = results.data;
 			this.setState({ identity, token });
 		});
-	}
+  }
+  
+  leaveRoom() {
+    this.state.activeRoom.disconnect();
+    this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
+  }
 
 	render() {
     // Only show video track after user has joined a room
@@ -93,12 +99,12 @@ export default class VideoComponent extends Component {
 			''
     );
     // Hide 'Join Room' button if user has already joined a room.
-    let roomJoined = this.state.hasJoinedRoom ? "" : <RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />;
+    let roomJoined = this.state.hasJoinedRoom ? <RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} /> : <RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />;
 		return (
 			<Card>
 				<CardText>
 					<div className="flex-container">
-						{showLocalTrack}
+						{ showLocalTrack }
 						<div className="flex-item">
 							<TextField
 								hintText="Room Name"
