@@ -3,17 +3,20 @@ import AppBar from 'material-ui/AppBar';
 import { render } from "react-dom";
 import "./styles/styles.css";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import injectTapEventPlugin from "react-tap-event-plugin";
 injectTapEventPlugin();
 
+import VideoComponent from './VideoComponent';
+
 let dom = document.getElementById("app");
 render(
-    <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            <div>
+    <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+        <div>
             <AppBar title="React Twilio Video" />
-            </div>
+            <VideoComponent />
+        </div>
     </MuiThemeProvider>
     ,
     dom
