@@ -11,17 +11,17 @@ export default class VideoComponent extends Component {
 		this.state = {
 			identity: null,
 			roomName: '',
-			tokenReceived: false,  // Check if user has received token
-			roomNameErr: false,  // Track error for room name TextField
+			tokenReceived: false, // Check if user has received token
+			roomNameErr: false, // Track error for room name TextField
 			previewTracks: null,
-      localMediaAvailable: false,
-      hasJoinedRoom: false,
-      activeRoom: "" // Track the current active room
+			localMediaAvailable: false,
+			hasJoinedRoom: false,
+			activeRoom: '' // Track the current active room
 		};
 		this.joinRoom = this.joinRoom.bind(this);
 		this._handleRoomNameChange = this._handleRoomNameChange.bind(this);
-    this.roomJoined = this.roomJoined.bind(this);
-    this.leaveRoom = this.leaveRoom.bind(this);
+		this.roomJoined = this.roomJoined.bind(this);
+		this.leaveRoom = this.leaveRoom.bind(this);
 	}
 
 	_handleRoomNameChange(e) {
@@ -35,6 +35,7 @@ export default class VideoComponent extends Component {
 			return;
 		}
 
+		console.log("Joining room '" + this.state.roomName + "'...");
 		let connectOptions = {
 			name: this.state.roomName
 		};
@@ -54,27 +55,73 @@ export default class VideoComponent extends Component {
 		tracks.forEach(track => {
 			container.appendChild(track.attach());
 		});
-  }
-  
-  // Attaches a track to a specified DOM container
-  attachParticipantTracks(participant, container) {
+	}
+
+	// Attaches a track to a specified DOM container
+	attachParticipantTracks(participant, container) {
 		var tracks = Array.from(participant.tracks.values());
 		this.attachTracks(tracks, container);
 	}
 
 	roomJoined(room) {
 		// Called when a user a participant joins a room
+		console.log("Joined as '" + this.state.identity + "'");
 		this.setState({
 			activeRoom: room,
-      localMediaAvailable: true,
-      hasJoinedRoom: true
-    });
-    
+			localMediaAvailable: true,
+			hasJoinedRoom: true
+		});
+
 		// Attach LocalParticipant's Tracks, if not already attached.
 		var previewContainer = this.refs.localMedia;
 		if (!previewContainer.querySelector('video')) {
 			this.attachParticipantTracks(room.localParticipant, previewContainer);
 		}
+
+		// Attach the Tracks of the Room's Participants.
+		room.participants.forEach(participant => {
+			console.log("Already in Room: '" + participant.identity + "'");
+			var previewContainer = this.refs.remoteMedia;
+			this.attachParticipantTracks(participant, previewContainer);
+		});
+
+		// When a Participant joins the Room, log the event.
+		room.on('participantConnected', participant => {
+			console.log("Joining: '" + participant.identity + "'");
+		});
+
+		// When a Participant adds a Track, attach it to the DOM.
+		room.on('trackAdded', (track, participant) => {
+			console.log(participant.identity + ' added track: ' + track.kind);
+			var previewContainer = this.refs.remoteMedia;
+			this.attachTracks([track], previewContainer);
+		});
+
+		// When a Participant removes a Track, detach it from the DOM.
+		room.on('trackRemoved', (track, participant) => {
+			this.log(participant.identity + ' removed track: ' + track.kind);
+			this.detachTracks([track]);
+		});
+
+		// When a Participant leaves the Room, detach its Tracks.
+		room.on('participantDisconnected', participant => {
+			console.log("Participant '" + participant.identity + "' left the room");
+			this.detachParticipantTracks(participant);
+		});
+
+		// Once the LocalParticipant leaves the room, detach the Tracks
+		// of all Participants, including that of the LocalParticipant.
+		room.on('disconnected', () => {
+			if (this.state.previewTracks) {
+				this.state.previewTracks.forEach(track => {
+					track.stop();
+				});
+			}
+			this.detachParticipantTracks(room.localParticipant);
+			room.participants.forEach(this.detachParticipantTracks);
+			this.state.activeRoom = null;
+			this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
+		});
 	}
 
 	componentDidMount() {
@@ -82,29 +129,33 @@ export default class VideoComponent extends Component {
 			const { identity, token } = results.data;
 			this.setState({ identity, token });
 		});
-  }
-  
-  leaveRoom() {
-    this.state.activeRoom.disconnect();
-    this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
-  }
+	}
+
+	leaveRoom() {
+		this.state.activeRoom.disconnect();
+		this.setState({ hasJoinedRoom: false, localMediaAvailable: false });
+	}
 
 	render() {
-    // Only show video track after user has joined a room
+		// Only show video track after user has joined a room
 		let showLocalTrack = this.state.localMediaAvailable ? (
 			<div className="flex-item">
 				<div ref="localMedia" />
 			</div>
 		) : (
 			''
-    );
-    // Hide 'Join Room' button if user has already joined a room.
-    let roomJoined = this.state.hasJoinedRoom ? <RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} /> : <RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />;
+		);
+		// Hide 'Join Room' button if user has already joined a room.
+		let roomJoined = this.state.hasJoinedRoom ? (
+			<RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} />
+		) : (
+			<RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />
+		);
 		return (
 			<Card>
 				<CardText>
 					<div className="flex-container">
-						{ showLocalTrack }
+						{showLocalTrack}
 						<div className="flex-item">
 							<TextField
 								hintText="Room Name"
@@ -112,9 +163,9 @@ export default class VideoComponent extends Component {
 								errorText={this.state.roomNameErr ? 'Room Name is required' : undefined}
 							/>
 							<br />
-							{ roomJoined }
+							{roomJoined}
 						</div>
-						<div className="flex-item" />
+						<div className="flex-item" ref="remoteMedia" id="remote-media" />
 					</div>
 				</CardText>
 			</Card>
