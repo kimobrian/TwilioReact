@@ -8,7 +8,6 @@ var configFunc = function(){
     var config = {
         devtool: "source-map",
         entry: [
-            'webpack-hot-middleware/client?reload=true',
             __dirname + "/app/app.js"
         ],
         output: {
@@ -42,7 +41,6 @@ var configFunc = function(){
                 template: path.join(__dirname , "/app/index.html"),
                 inject: "body"
             }),
-            new webpack.HotModuleReplacementPlugin(),
             new webpack.BannerPlugin("React Twilio"),
             new ExtractTextPlugin("[name]-[hash].css")
         ]};
@@ -52,6 +50,10 @@ var configFunc = function(){
             name: "commons",              
             filename: "commons.js"
         }));
+    }
+    if(process.env.NODE_ENV === "DEV") {
+        config.entry.push('webpack-hot-middleware/client?reload=true');
+        config.plugins.push(new webpack.HotModuleReplacementPlugin());
     }
     return config;
 }();
