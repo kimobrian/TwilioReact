@@ -106,7 +106,7 @@ export default class VideoComponent extends Component {
 		) : '';
 		// Hide 'Join Room' button if user has already joined a room.
 		let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
-			<RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} />
+			<RaisedButton label="Leave Room" secondary={true} onClick={() => alert("Leave Room") } />
 		) : (
 			<RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />
 		);
