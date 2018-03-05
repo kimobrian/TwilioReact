@@ -11,7 +11,6 @@ export default class VideoComponent extends Component {
 		this.state = {
 			identity: null,
 			roomName: '',
-			tokenReceived: false, // Check if user has received token
 			roomNameErr: false, // Track error for room name TextField
 			previewTracks: null,
 			localMediaAvailable: false,
@@ -19,14 +18,14 @@ export default class VideoComponent extends Component {
 			activeRoom: '' // Track the current active room
 		};
 		this.joinRoom = this.joinRoom.bind(this);
-		this._handleRoomNameChange = this._handleRoomNameChange.bind(this);
+		this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
 		this.roomJoined = this.roomJoined.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
     this.detachTracks = this.detachTracks.bind(this);
     this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
 	}
 
-	_handleRoomNameChange(e) {
+	handleRoomNameChange(e) {
 		let roomName = e.target.value;
 		this.setState({ roomName });
 	}
@@ -79,7 +78,7 @@ export default class VideoComponent extends Component {
 	}
 
 	roomJoined(room) {
-		// Called when a user a participant joins a room
+		// Called when a participant joins a room
 		console.log("Joined as '" + this.state.identity + "'");
 		this.setState({
 			activeRoom: room,
@@ -157,11 +156,9 @@ export default class VideoComponent extends Component {
 			<div className="flex-item">
 				<div ref="localMedia" />
 			</div>
-		) : (
-			''
-		);
+		) : '';
 		// Hide 'Join Room' button if user has already joined a room.
-		let roomJoined = this.state.hasJoinedRoom ? (
+		let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
 			<RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} />
 		) : (
 			<RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />
@@ -174,11 +171,11 @@ export default class VideoComponent extends Component {
 						<div className="flex-item">
 							<TextField
 								hintText="Room Name"
-								onChange={this._handleRoomNameChange}
+								onChange={this.handleRoomNameChange}
 								errorText={this.state.roomNameErr ? 'Room Name is required' : undefined}
 							/>
 							<br />
-							{roomJoined}
+							{joinOrLeaveRoomButton}
 						</div>
 						<div className="flex-item" ref="remoteMedia" id="remote-media" />
 					</div>
