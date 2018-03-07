@@ -20,9 +20,9 @@ export default class VideoComponent extends Component {
 		this.joinRoom = this.joinRoom.bind(this);
 		this.handleRoomNameChange = this.handleRoomNameChange.bind(this);
 		this.roomJoined = this.roomJoined.bind(this);
-    this.leaveRoom = this.leaveRoom.bind(this);
-    this.detachTracks = this.detachTracks.bind(this);
-    this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
+		this.leaveRoom = this.leaveRoom.bind(this);
+		this.detachTracks = this.detachTracks.bind(this);
+		this.detachParticipantTracks = this.detachParticipantTracks.bind(this);
 	}
 
 	handleRoomNameChange(e) {
@@ -156,7 +156,9 @@ export default class VideoComponent extends Component {
 			<div className="flex-item">
 				<div ref="localMedia" />
 			</div>
-		) : '';
+		) : (
+			''
+		);
 		// Hide 'Join Room' button if user has already joined a room.
 		let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
 			<RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} />
