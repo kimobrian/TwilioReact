@@ -113,7 +113,7 @@ export default class VideoComponent extends Component {
 
 		// When a Participant removes a Track, detach it from the DOM.
 		room.on('trackRemoved', (track, participant) => {
-			this.log(participant.identity + ' removed track: ' + track.kind);
+			console.log(participant.identity + ' removed track: ' + track.kind);
 			this.detachTracks([track]);
 		});
 
