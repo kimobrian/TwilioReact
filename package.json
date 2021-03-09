@@ -13,7 +13,7 @@
     "faker": "^4.1.0",
     "material-ui": "^0.20.0",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.2.1",
     "twilio": "^3.11.1",
     "twilio-video": "^1.7.0",
     "webpack": "^3.8.1"
